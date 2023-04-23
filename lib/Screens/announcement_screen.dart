@@ -167,9 +167,6 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
           },
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
     );
   }
 }

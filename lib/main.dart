@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:pathstrides_mobile/Screens/geolocation_screen.dart';
 import 'package:pathstrides_mobile/Screens/landing_screen.dart';
 import 'package:pathstrides_mobile/Screens/location_page.dart';
+import 'package:pathstrides_mobile/Screens/navbar_screen.dart';
 import 'package:pathstrides_mobile/Screens/pointsshop_screen.dart';
 import 'package:pathstrides_mobile/Screens/task_report.dart';
 import '../Screens/register_screen.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: NavScreen(),
     );
   }
 }

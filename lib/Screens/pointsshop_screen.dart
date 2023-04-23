@@ -257,9 +257,6 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
           },
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
     );
   }
 }
