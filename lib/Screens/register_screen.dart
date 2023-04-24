@@ -50,11 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'user_email', responseMap['users']['user_email']);
         await preferences.setString(
             'user_username', responseMap['users']['user_username']);
-        await preferences.setString('status', responseMap['users']['status']);
-        await preferences.setString(
-            'user_department', responseMap['users']['user_department']);
         await preferences.setString(
             'contactnumber', responseMap['users']['contactnumber']);
+        await preferences.setString('status', responseMap['users']['status']);
+
+        await preferences.setInt('admin_id', responseMap['users']['admin_id']);
+        await preferences.setInt('dep_id', responseMap['users']['dep_id']);
+        await preferences.setInt('emp_coll', responseMap['users']['emp_coll']);
         await preferences.setString('token', 'token');
         //await preferences.setStringList('data', responseMap[<String>["users"]]);
         Navigator.push(

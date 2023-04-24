@@ -186,7 +186,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ? Positioned(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 680.0, left: 100.0, bottom: 0.0, right: 0.0),
+                              top: 530.0, left: 100.0, bottom: 0.0, right: 0.0),
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pushReplacement(
@@ -216,7 +216,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     : Positioned(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 680.0, left: 100.0, bottom: 0.0, right: 0.0),
+                              top: 530.0, left: 100.0, bottom: 0.0, right: 0.0),
                           child: ElevatedButton(
                             onPressed: () {
                               null;

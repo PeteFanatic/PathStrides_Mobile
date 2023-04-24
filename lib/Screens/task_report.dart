@@ -84,23 +84,6 @@ class _TaskReportState extends State<TaskReport> {
 // Handle the server response here
     // print(await response.stream.bytesToString());
   }
-  // Future uploadImage(File? image, String text) async {
-  //   final String uri = "http://10.0.2.2:8000/api/upload-image";
-  //   var request = http.MultipartFile('POST', Uri.parse(uri));
-  //   request.fields['text'] = text.toString();
-  //   if (image != null) {
-  //     request.files.add(await http.MultipartFile.fromPath('image', image.path));
-  //   }
-  //   var response = await request.send();
-  //   http.Response responseJson = await http.Response.fromStream(response);
-  //   print(jsonMap);
-  //   if (response.statusCode == 200) {
-  //     return jsonMap;
-  //   } else {
-  //     print('Error');
-  //     return jsonMap;
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +210,7 @@ class _TaskReportState extends State<TaskReport> {
                 RoundedButton(
                     btnText: 'Submit',
                     onBtnPressed: () {
-                      //uploadImage(_image!);
+                      uploadImage(_image!);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
