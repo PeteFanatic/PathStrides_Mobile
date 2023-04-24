@@ -36,24 +36,24 @@ class _HomeScreenState extends State<HomeScreen> {
     var jsonData = json.decode(data.body);
     late SharedPreferences preferences;
     preferences = await SharedPreferences.getInstance();
-    int? user_id = preferences.getInt('user_id');
+    //int? user_id = preferences.getInt('user_id');
     List<TaskData> tasks = [];
     for (var u in jsonData) {
       TaskData task = TaskData(
           u["task_id"],
+          u["user_id"],
           u["task_title"],
           u["task_desc"],
           u["points"],
           u["address"],
           u["lat"],
           u["lng"],
-          // u["status"],
-          u["user_id"],
+          u["status"],
           u["deadline"]);
-      int temp = u["user_id"];
-      if (temp == user_id) {
-        tasks.add(task);
-      }
+      //int temp = u["user_id"];
+      //if (temp == user_id) {
+      tasks.add(task);
+      //}
     }
     print(tasks.length);
 

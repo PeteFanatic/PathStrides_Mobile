@@ -18,26 +18,26 @@ class TaskScreen extends StatefulWidget {
 
 class TaskData {
   int task_id;
+  int user_id = 0;
   String task_title = "";
   String task_desc = "";
   int points;
   String address = "";
   String lat = "";
   String lng = "";
-  // int status = 0;
-  int user_id = 0;
+  String status = "";
   String deadline = "";
 
   TaskData(
       this.task_id,
+      this.user_id,
       this.task_title,
       this.task_desc,
       this.points,
       this.address,
       this.lat,
       this.lng,
-      // this.status,
-      this.user_id,
+      this.status,
       this.deadline);
 }
 
@@ -53,19 +53,19 @@ class _TaskScreenState extends State<TaskScreen> {
     for (var u in jsonData) {
       TaskData task = TaskData(
           u["task_id"],
+          u["user_id"],
           u["task_title"],
           u["task_desc"],
           u["points"],
           u["address"],
           u["lat"],
           u["lng"],
-          // u["status"],
-          u["user_id"],
+          u["status"],
           u["deadline"]);
       int temp = u["user_id"];
-      if (temp == user_id) {
-        tasks.add(task);
-      }
+      //if (temp == user_id) {
+      tasks.add(task);
+      //}
     }
     print(tasks.length);
 

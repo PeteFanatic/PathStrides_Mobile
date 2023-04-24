@@ -42,10 +42,14 @@ Future<UserData> getUser() async {
   u["user_username"];
   u["user_password"];
   u["user_department"];
+  u["user_points"];
   u["role"];
   u["status"];
+  u["user_lat"];
+  u["user_long"];
   u["admin_id"];
   u["dep_id"];
+  u["emp_coll"];
   return user;
 }
 
@@ -97,7 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
         await preferences.setString(
             'user_username', responseMap['users']['user_username']);
         await preferences.setString(
-            'user_department', responseMap['users']['user_department']);
+            'contactnumber', responseMap['users']['contactnumber']);
+        await preferences.setString('status', responseMap['users']['status']);
+
+        await preferences.setInt('admin_id', responseMap['users']['admin_id']);
+        await preferences.setInt('dep_id', responseMap['users']['dep_id']);
+        await preferences.setInt('emp_coll', responseMap['users']['emp_coll']);
         await preferences.setString('token', 'token');
         return Future.delayed(
             const Duration(seconds: 1),
