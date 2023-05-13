@@ -24,11 +24,11 @@ class PointsShopScreen extends StatefulWidget {
 }
 
 class PointShopData {
-  int points_id;
-  String points_name = "";
+  int item_id;
+  String item_name = "";
   int points;
   int user_id;
-  PointShopData(this.points_id, this.points_name, this.points, this.user_id);
+  PointShopData(this.item_id, this.item_name, this.points, this.user_id);
 }
 
 class _PointsShopScreenState extends State<PointsShopScreen> {
@@ -52,7 +52,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
       PointShopData pointShop = PointShopData(
-          p["points_id"], p["points_name"], p["points"], p["user_id"]);
+          p["item_id"], p["item_name"], p["points"], p["user_id"]);
       int temp = p["user_id"];
       if (temp == user_id || temp == null) {
         pointShops.add(pointShop);
@@ -191,7 +191,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                     ),
                     child: ListTile(
                       title: Text(
-                        snapshot3.data[index].points_name,
+                        snapshot3.data[index].item_name,
                         style:
                             TextStyle(fontFamily: 'Inter-black', fontSize: 18),
                       ),
@@ -216,7 +216,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                             ),
                           ),
                           content: Text(
-                            'You are about to purchase ${snapshot3.data[index].points_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
+                            'You are about to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
                             style: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 14,
@@ -278,7 +278,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
 //                                       ),
 //                                     ),
 //                                     content: Text(
-//                                       'You are about to purchase ${snapshot3.data[index].points_name.toString()}. Are you sure you want to purchase this item?',
+//                                       'You are about to purchase ${snapshot3.data[index].item_name.toString()}. Are you sure you want to purchase this item?',
 //                                       style: TextStyle(
 //                                         fontFamily: 'Inter-semibold',
 //                                         fontWeight: FontWeight.bold,
