@@ -15,6 +15,7 @@ import 'Screens/profile_screen.dart';
 import 'Screens/task_desc.dart';
 import 'Screens/task_screen.dart';
 import 'Screens/taskReport_screen.dart';
+import 'controller/pointshop_controller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(PointShopController());
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: LandingScreen(),

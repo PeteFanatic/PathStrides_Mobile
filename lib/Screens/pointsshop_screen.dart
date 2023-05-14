@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:pathstrides_mobile/Screens/pointshop_info.dart';
+import 'package:pathstrides_mobile/controller/pointshop_controller.dart';
 import 'package:pathstrides_mobile/widgets/bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:pathstrides_mobile/widgets/ItemsWidget.dart';
@@ -42,12 +44,6 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
   void initState() {
     super.initState;
     getUserData();
-  }
-
-  void setItemAsSold(int index) {
-    setState(() {
-      items[index].isSold = true;
-    });
   }
 
   void getUserData() async {
@@ -91,6 +87,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
   @override
   Widget build(BuildContext context) {
     print('henloo');
+    final controller = Get.find<PointShopController>();
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 255, 140, 52),
       appBar: AppBar(
@@ -193,146 +190,134 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
               tileMode: TileMode.clamp),
         ),
         padding: EdgeInsets.only(top: 15),
-        child: FutureBuilder(
-          future: _getRedeemShop(),
-          builder: (BuildContext context, AsyncSnapshot snapshot3) {
-            if (snapshot3.data == null) {
-              return Container(
-                child: Center(
-                  child: Text(
-                    'No items to show.',
+        child: Obx(() {
+          return ListView.builder(
+            itemCount: controller.pointshopdatas.length,
+            itemBuilder: (BuildContext context, int index) {
+              final data = controller.pointshopdatas[index];
+              return Card(
+                color: (data.isSold) ? Colors.green : Colors.white,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                child: ListTile(
+                  title: Text(
+                    data.item_name,
+                    style: TextStyle(fontFamily: 'Inter-black', fontSize: 18),
                   ),
+                  subtitle: Text(
+                    '${data.points.toString()} Points',
+                    style: TextStyle(
+                      fontFamily: 'Inter-semibold',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 106, 106, 106),
+                    ),
+                  ),
+                  onTap: () {
+                    if (preferences.getInt('user_points')! >= data.points &&
+                        !data.isSold) {
+                      // int? itemPoints = snapshot3.data[index].points;
+
+                      // int userpoints =
+                      //     preferences.getInt('user_points')! - itemPoints!;
+
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            "You purchased ${data.item_name.toString()}.",
+                            style: TextStyle(
+                              fontFamily: 'Inter-bold',
+                              fontSize: 18,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ),
+                          content: Text(
+                            'You are about to purchase ${data.item_name.toString()}. This costs ${data.points.toString()} points. Are you sure you want to purchase this item?',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              color: Color.fromARGB(255, 106, 106, 106),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                "Yes",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 185, 6),
+                                  fontFamily: 'Inter-bold',
+                                  fontSize: 16,
+                                ),
+                              ),
+                              onPressed: () {
+                                deductUserPoints(data.points);
+                                controller.setItemAsSold(index);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                "No",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 0, 0),
+                                  fontFamily: 'Inter-bold',
+                                  fontSize: 16,
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (preferences.getInt('user_points')! <
+                            data.points &&
+                        !data.isSold) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            "Insufficient Points",
+                            style: TextStyle(
+                              fontFamily: 'Inter-bold',
+                              fontSize: 18,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ),
+                          content: Text(
+                            'You do not have enough points to purchase ${data.item_name.toString()}. This costs ${data.points.toString()} points and you only have ${preferences.getInt('user_points').toString()} points.',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              color: Color.fromARGB(255, 106, 106, 106),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                "Back",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 0, 0),
+                                  fontFamily: 'Inter-bold',
+                                  fontSize: 16,
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      print('SOLDDDD');
+                    }
+                  },
                 ),
               );
-            } else {
-              return ListView.builder(
-                itemCount: snapshot3.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  PointShopData data = snapshot3.data[index];
-                  PointShopData pointShopview;
-                  return Card(
-                    color: (items[index].isSold) ? Colors.green : Colors.white,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        snapshot3.data[index].item_name,
-                        style:
-                            TextStyle(fontFamily: 'Inter-black', fontSize: 18),
-                      ),
-                      subtitle: Text(
-                        '${snapshot3.data[index].points.toString()} Points',
-                        style: TextStyle(
-                          fontFamily: 'Inter-semibold',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 106, 106, 106),
-                        ),
-                      ),
-                      onTap: () {
-                        if (preferences.getInt('user_points')! >=
-                            snapshot3.data[index].points) {
-                          // int? itemPoints = snapshot3.data[index].points;
-
-                          // int userpoints =
-                          //     preferences.getInt('user_points')! - itemPoints!;
-
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                "You purchased ${snapshot3.data[index].item_name.toString()}.",
-                                style: TextStyle(
-                                  fontFamily: 'Inter-bold',
-                                  fontSize: 18,
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                              content: Text(
-                                'You are about to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 106, 106, 106),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: Text(
-                                    "Yes",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 0, 185, 6),
-                                      fontFamily: 'Inter-bold',
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    deductUserPoints(
-                                        snapshot3.data[index].points);
-                                    setItemAsSold(index);
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(
-                                    "No",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 255, 0, 0),
-                                      fontFamily: 'Inter-bold',
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                "Insufficient Points",
-                                style: TextStyle(
-                                  fontFamily: 'Inter-bold',
-                                  fontSize: 18,
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                              content: Text(
-                                'You do not have enough points to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points and you only have ${preferences.getInt('user_points').toString()} points.',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 106, 106, 106),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: Text(
-                                    "Back",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 255, 0, 0),
-                                      fontFamily: 'Inter-bold',
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  );
-                },
-              );
-            }
-          },
-        ),
+            },
+          );
+        }),
       ),
     );
   }
