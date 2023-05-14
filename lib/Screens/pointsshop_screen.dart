@@ -27,8 +27,10 @@ class PointShopData {
   int item_id;
   String item_name = "";
   int points;
+  String item_code = "";
   int user_id;
-  PointShopData(this.item_id, this.item_name, this.points, this.user_id);
+  PointShopData(
+      this.item_id, this.item_name, this.points, this.item_code, this.user_id);
 }
 
 class _PointsShopScreenState extends State<PointsShopScreen> {
@@ -42,6 +44,19 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
     preferences = await SharedPreferences.getInstance();
   }
 
+  Future<void> deductUserPoints(int pointsToDeduct) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Retrieve current points value
+    int currentPoints = prefs.getInt('user_points') ?? 0;
+
+    // Deduct points
+    int updatedPoints = currentPoints - pointsToDeduct;
+
+    // Update points in SharedPreferences
+    await prefs.setInt('user_points', updatedPoints);
+  }
+
   Future<List<PointShopData>> _getRedeemShop() async {
     var data3 =
         await http.get(Uri.parse('http://10.0.2.2:8000/api/employeePointShop'));
@@ -51,8 +66,8 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
     int? user_id = preferences.getInt('user_id');
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
-      PointShopData pointShop = PointShopData(
-          p["item_id"], p["item_name"], p["points"], p["user_id"]);
+      PointShopData pointShop = PointShopData(p["item_id"], p["item_name"],
+          p["points"], p["item_code"], p["user_id"]);
       int temp = p["user_id"];
       if (temp == user_id || temp == null) {
         pointShops.add(pointShop);
@@ -204,51 +219,100 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                           color: Color.fromARGB(255, 106, 106, 106),
                         ),
                       ),
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(
-                            "Are you sure you want to purchase this item?",
-                            style: TextStyle(
-                              fontFamily: 'Inter-bold',
-                              fontSize: 18,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                          content: Text(
-                            'You are about to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14,
-                              color: Color.fromARGB(255, 106, 106, 106),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              child: Text(
-                                "Yes",
+                      onTap: () {
+                        if (preferences.getInt('user_points')! >=
+                            snapshot3.data[index].points) {
+                          // int? itemPoints = snapshot3.data[index].points;
+
+                          // int userpoints =
+                          //     preferences.getInt('user_points')! - itemPoints!;
+
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                "You purchased ${snapshot3.data[index].item_name.toString()}.",
                                 style: TextStyle(
-                                  color: Color.fromARGB(255, 3, 192, 31),
                                   fontFamily: 'Inter-bold',
-                                  fontSize: 16,
+                                  fontSize: 18,
+                                  color: Color.fromARGB(255, 0, 0, 0),
                                 ),
                               ),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            TextButton(
-                              child: Text(
-                                "No",
+                              content: Text(
+                                'You are about to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
                                 style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 0, 0),
-                                  fontFamily: 'Inter-bold',
-                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 106, 106, 106),
                                 ),
                               ),
-                              onPressed: () => Navigator.pop(context),
+                              actions: [
+                                TextButton(
+                                  child: Text(
+                                    "Yes",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 185, 6),
+                                      fontFamily: 'Inter-bold',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    deductUserPoints(
+                                        snapshot3.data[index].points);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    "No",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 255, 0, 0),
+                                      fontFamily: 'Inter-bold',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                "Insufficient Points",
+                                style: TextStyle(
+                                  fontFamily: 'Inter-bold',
+                                  fontSize: 18,
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                ),
+                              ),
+                              content: Text(
+                                'You do not have enough points to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points and you only have ${preferences.getInt('user_points').toString()}.',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 106, 106, 106),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: Text(
+                                    "Back",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 255, 0, 0),
+                                      fontFamily: 'Inter-bold',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
                     ),
                   );
                 },
@@ -256,9 +320,6 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
             }
           },
         ),
-      ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
       ),
     );
   }
