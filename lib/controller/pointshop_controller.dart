@@ -18,7 +18,7 @@ class PointShopController extends GetxController {
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
       PointShopData pointShop = PointShopData(p["item_id"], p["item_name"],
-          p["points"], p["item_code"], p["user_id"], false);
+          p["points"], p["item_code"], p["user_id"], false, false);
       int temp = p["user_id"];
       if (temp == user_id || temp == null) {
         pointShops.add(pointShop);
@@ -30,6 +30,10 @@ class PointShopController extends GetxController {
 
   void setItemAsSold(int index) {
     pointshopdatas[index].isSold = true;
+  }
+
+  void setItemAsClaimed(int index) {
+    pointshopdatas[index].isClaimed = true;
   }
 
   @override
