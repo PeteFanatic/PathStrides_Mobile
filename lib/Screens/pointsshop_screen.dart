@@ -29,15 +29,25 @@ class PointShopData {
   int points;
   String item_code = "";
   int user_id;
-  PointShopData(
-      this.item_id, this.item_name, this.points, this.item_code, this.user_id);
+  bool isSold = false;
+  PointShopData(this.item_id, this.item_name, this.points, this.item_code,
+      this.user_id, this.isSold);
 }
 
 class _PointsShopScreenState extends State<PointsShopScreen> {
   late SharedPreferences preferences;
+
+  List<PointShopData> items = [];
+
   void initState() {
     super.initState;
     getUserData();
+  }
+
+  void setItemAsSold(int index) {
+    setState(() {
+      items[index].isSold = true;
+    });
   }
 
   void getUserData() async {
@@ -67,18 +77,20 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
       PointShopData pointShop = PointShopData(p["item_id"], p["item_name"],
-          p["points"], p["item_code"], p["user_id"]);
+          p["points"], p["item_code"], p["user_id"], false);
       int temp = p["user_id"];
       if (temp == user_id || temp == null) {
         pointShops.add(pointShop);
       }
     }
     print(pointShops.length);
+    items = pointShops;
     return pointShops;
   }
 
   @override
   Widget build(BuildContext context) {
+    print('henloo');
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 255, 140, 52),
       appBar: AppBar(
@@ -199,7 +211,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                   PointShopData data = snapshot3.data[index];
                   PointShopData pointShopview;
                   return Card(
-                    color: Colors.white,
+                    color: (items[index].isSold) ? Colors.green : Colors.white,
                     margin: EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 5,
@@ -259,6 +271,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                                   onPressed: () {
                                     deductUserPoints(
                                         snapshot3.data[index].points);
+                                    setItemAsSold(index);
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -289,7 +302,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                                 ),
                               ),
                               content: Text(
-                                'You do not have enough points to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points and you only have ${preferences.getInt('user_points').toString()}.',
+                                'You do not have enough points to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points and you only have ${preferences.getInt('user_points').toString()} points.',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 14,
