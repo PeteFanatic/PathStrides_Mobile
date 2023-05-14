@@ -1,17 +1,11 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-
-import 'package:pathstrides_mobile/Screens/home_screen.dart';
+import 'package:get/get.dart';
+import 'package:pathstrides_mobile/Screens/login_screen.dart';
+import 'package:pathstrides_mobile/Screens/pointsshop_screen.dart';
+import 'package:pathstrides_mobile/Services/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../Services/user.dart';
 
 class ProfileScreen extends StatefulWidget {
   //ProfileData profileview;
@@ -22,64 +16,35 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late SharedPreferences preferences;
-  @override
-  void initState() {
-    super.initState;
-    getUserData();
-  }
+  final scrollController = ScrollController();
 
-  void getUserData() async {
-    preferences = await SharedPreferences.getInstance();
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
     // var user = UserData();
-    String f_name = preferences.getString('user_fname').toString();
-    String m_name = preferences.getString('user_mname').toString();
-    if (m_name == null) {
-      m_name = "";
-    }
-    String l_name = preferences.getString('user_lname').toString();
-    String username = preferences.getString('user_username').toString();
-    String email = preferences.getString('user_email').toString();
-    String department = preferences.getString('user_department').toString();
-    String status = preferences.getString('status').toString();
-    String contactnumber = preferences.getString('contactnumber').toString();
+    final controller = Get.find<ProfileController>();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 10,
               left: 10,
             ),
-            color: Color.fromARGB(255, 255, 255, 255), // set your color
+            color: const Color.fromARGB(255, 255, 255, 255), // set your color
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 30,
-                            color: Color.fromARGB(255, 255, 153, 0),
-                          ),
-                        ),
+                      children: const [
                         Text(
                           "User Profile",
                           style: TextStyle(
@@ -97,56 +62,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         elevation: 0,
       ),
-      body: Container(
-        padding: EdgeInsets.only(top: 15, left: 15, right: 15),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 255, 157, 59),
-                Color.fromARGB(255, 235, 80, 24),
-              ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(1.5, 0.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp),
-        ),
-        child: Column(
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                      bottom: 15,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: new BorderRadius.circular(16.0),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.person_pin_circle_rounded),
-                              onPressed: () {},
-                              iconSize: 150,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          child: Column(
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: Container(
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 255, 157, 59),
+                  Color.fromARGB(255, 235, 80, 24),
+                ],
+                begin: FractionalOffset(0.0, 0.0),
+                end: FractionalOffset(1.5, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                        bottom: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.person_pin_circle_rounded),
+                                onPressed: () {},
+                                iconSize: 150,
+                              ),
+                            ],
+                          ),
+                          Column(
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    '${f_name} ${m_name} ${l_name}',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter-Bold',
-                                      fontSize: 30,
-                                    ),
+                                  Obx(
+                                    () {
+                                      UserProfileModel user =
+                                          controller.userProfile.value;
+                                      return Text(
+                                        '${user.firstName ?? ""} ${user.middleName ?? ""} ${user.lastName ?? ""}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter-Bold',
+                                          fontSize: 30,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -155,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Column(
                                     children: [
-                                      Padding(
+                                      const Padding(
                                         padding: EdgeInsets.only(top: 10),
                                       ),
                                       Container(
@@ -165,10 +138,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              new BorderRadius.circular(16.0),
+                                              BorderRadius.circular(16.0),
                                           color: Colors.green,
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           "Present",
                                           style: TextStyle(
                                             fontFamily: 'Inter-Bold',
@@ -184,94 +157,145 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                padding: const EdgeInsets.only(
+                  bottom: 15,
+                  left: 10,
+                  top: 15,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.person_2_rounded),
+                          onPressed: () {},
+                          iconSize: 30,
                         ),
+                        Obx(() {
+                          UserProfileModel user = controller.userProfile.value;
+                          return Text(
+                            user.userName ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                            ),
+                          );
+                        }),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 15),
-              padding: EdgeInsets.only(
-                bottom: 15,
-                left: 10,
-                top: 15,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: new BorderRadius.circular(16.0),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.person_2_rounded),
-                        onPressed: () {},
-                        iconSize: 30,
-                      ),
-                      Text(
-                        username == null ? "" : username,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 20,
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.groups_3_rounded),
+                          onPressed: () {},
+                          iconSize: 30,
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.groups_3_rounded),
-                        onPressed: () {},
-                        iconSize: 30,
-                      ),
-                      Text(
-                        department == null ? "" : department,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 20,
+                        Obx(() {
+                          UserProfileModel user = controller.userProfile.value;
+                          return Text(
+                            user.department ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.email_rounded),
+                          onPressed: () {},
+                          iconSize: 30,
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.email_rounded),
-                        onPressed: () {},
-                        iconSize: 30,
-                      ),
-                      Text(
-                        email,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 20,
+                        Obx(() {
+                          UserProfileModel user = controller.userProfile.value;
+                          return Text(
+                            user.email ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.phone_android_rounded),
+                          onPressed: () {},
+                          iconSize: 30,
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.phone_android_rounded),
-                        onPressed: () {},
-                        iconSize: 30,
-                      ),
-                      Text(
-                        contactnumber != null ? "" : contactnumber,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Obx(() {
+                          UserProfileModel user = controller.userProfile.value;
+                          return Text(
+                            user.contactNumber ?? "",
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 20,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const PointsShopScreen()));
+                },
+
+                // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                        top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
+                    minimumSize: const Size(150, 40),
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color.fromARGB(255, 255, 153, 0),
+                    elevation: 12.0,
+                    textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter-Bold',
+                        fontSize: 18)),
+                child: const Text('Points Shop'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const LoginScreen()));
+                },
+
+                // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                        top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
+                    minimumSize: const Size(150, 40),
+                    backgroundColor: const Color.fromARGB(255, 71, 71, 71),
+                    elevation: 12.0,
+                    textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter-Bold',
+                        fontSize: 18)),
+                child: const Text('Log Out'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -95,22 +95,8 @@ class _TaskScreenState extends State<TaskScreen> {
                   children: [
                     Row(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const TaskScreen(),
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 30,
-                            color: Color.fromARGB(255, 255, 153, 0),
-                          ),
-                        ),
                         Text(
-                          "Tasks",
+                          " Tasks",
                           style: TextStyle(
                             fontFamily: 'Inter-Black',
                             fontSize: 25,

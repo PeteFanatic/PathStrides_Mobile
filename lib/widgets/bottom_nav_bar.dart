@@ -30,7 +30,6 @@ class _BottomNavState extends State<BottomNav> {
             ),
             GButton(icon: Icons.announcement),
             GButton(icon: Icons.list),
-            GButton(icon: Icons.notifications),
             GButton(icon: Icons.person),
           ],
         ),

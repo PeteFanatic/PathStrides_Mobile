@@ -1,20 +1,11 @@
+// ignore_for_file: non_constant_identifier_names, unused_local_variable, prefer_const_constructors
+
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:pathstrides_mobile/Screens/pointshop_info.dart';
-import 'package:pathstrides_mobile/widgets/bottom_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:pathstrides_mobile/widgets/ItemsWidget.dart';
 
-import '../widgets/HomeAppBar.dart';
-import 'home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PointsShopScreen extends StatefulWidget {
   const PointsShopScreen({super.key});
@@ -24,37 +15,26 @@ class PointsShopScreen extends StatefulWidget {
 }
 
 class PointShopData {
-  int points_id;
-  String points_name = "";
+  int item_id;
+  String item_name = "";
   int points;
   int user_id;
-  PointShopData(this.points_id, this.points_name, this.points, this.user_id);
+  PointShopData(this.item_id, this.item_name, this.points, this.user_id);
 }
 
 class _PointsShopScreenState extends State<PointsShopScreen> {
-  late SharedPreferences preferences;
-  void initState() {
-    super.initState;
-    getUserData();
-  }
-
-  void getUserData() async {
-    preferences = await SharedPreferences.getInstance();
-  }
-
   Future<List<PointShopData>> _getRedeemShop() async {
     var data3 =
         await http.get(Uri.parse('http://10.0.2.2:8000/api/employeePointShop'));
     var jsonData = json.decode(data3.body);
-    late SharedPreferences preferences;
-    preferences = await SharedPreferences.getInstance();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     int? user_id = preferences.getInt('user_id');
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
       PointShopData pointShop = PointShopData(
-          p["points_id"], p["points_name"], p["points"], p["user_id"]);
+          p["item_id"], p["item_name"], p["points"], p["user_id"]);
       int temp = p["user_id"];
-      if (temp == user_id || temp == null) {
+      if (temp == user_id && user_id != null) {
         pointShops.add(pointShop);
       }
     }
@@ -64,14 +44,17 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 255, 140, 52),
       appBar: AppBar(
-        toolbarHeight: 120.10, //set your height
+        toolbarHeight: 100.10, //set your height
         flexibleSpace: SafeArea(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            color: Color.fromARGB(255, 255, 255, 255), // set your color
+            child: Container(
+          padding: const EdgeInsets.all(10),
+          color: Color.fromARGB(255, 255, 255, 255),
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Row(
@@ -80,20 +63,14 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                     Row(
                       children: [
                         InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
-                          },
-                          child: Icon(
+                          onTap: () {},
+                          child: const Icon(
                             Icons.arrow_back,
                             size: 30,
                             color: Color.fromARGB(255, 255, 153, 0),
                           ),
                         ),
-                        Text(
+                        const Text(
                           "Point Shop",
                           style: TextStyle(
                             fontFamily: 'Inter-Black',
@@ -106,13 +83,13 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                 ),
                 Column(
                   children: [
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(
-                        left: 15,
+                        left: 10,
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.card_giftcard),
+                      icon: const Icon(Icons.card_giftcard),
                       onPressed: () {},
                       iconSize: 23,
                     ),
@@ -123,81 +100,90 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                     //     fontFamily: 'Inter-bold',
                     //   ),
                     // ),
-                    FutureBuilder(
-                      builder: (BuildContext context, AsyncSnapshot snapshot4) {
-                        if (preferences == null) {
-                          return Text(
-                            "You currently don't have any points",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Inter',
-                              color: Color.fromARGB(255, 115, 115, 115),
-                            ),
-                          );
-                        } else {
-                          return Text(
-                            preferences.getInt('user_points').toString(),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontFamily: 'Inter-',
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                    Container(
+                      padding: EdgeInsets.only(
+                        top: 10,
+                      ),
+                      child: FutureBuilder(
+                        future: SharedPreferences.getInstance(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot4) {
+                          snapshot4.connectionState == ConnectionState.done &&
+                                  snapshot4.hasData
+                              ? const Text("You currently don't have points",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    color: Color.fromARGB(255, 115, 115, 115),
+                                  ))
+                              : Text(
+                                  snapshot4.data
+                                      .getInt('user_points')
+                                      .toString(),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    color: Color.fromARGB(255, 115, 115, 115),
+                                  ),
+                                );
+
+                          return const Placeholder();
+                        },
+                      ),
+                    )
                   ],
                 ),
               ],
             ),
           ),
-        ),
+        ) // set your color
+            ),
         elevation: 0,
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [
                 Color.fromARGB(255, 255, 203, 135),
                 Color.fromARGB(255, 255, 156, 76),
               ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(1.5, 0.0),
+              begin: FractionalOffset(0.0, 0.0),
+              end: FractionalOffset(1.5, 0.0),
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp),
         ),
-        padding: EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 15),
         child: FutureBuilder(
           future: _getRedeemShop(),
           builder: (BuildContext context, AsyncSnapshot snapshot3) {
             if (snapshot3.data == null) {
-              return Container(
-                child: Center(
-                  child: Text(
-                    'No items to show.',
-                  ),
+              return const Center(
+                child: Text(
+                  'No items to show.',
                 ),
               );
             } else {
               return ListView.builder(
+                scrollDirection: Axis.horizontal,
                 itemCount: snapshot3.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   PointShopData data = snapshot3.data[index];
-                  PointShopData pointShopview;
+                  // PointShopData pointShopview;
                   return Card(
                     color: Colors.white,
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 5,
                     ),
                     child: ListTile(
                       title: Text(
-                        snapshot3.data[index].points_name,
-                        style:
-                            TextStyle(fontFamily: 'Inter-black', fontSize: 18),
+                        snapshot3.data[index].item_name,
+                        style: const TextStyle(
+                            fontFamily: 'Inter-black', fontSize: 18),
                       ),
                       subtitle: Text(
                         '${snapshot3.data[index].points.toString()} Points',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Inter-semibold',
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -207,7 +193,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                       onTap: () => showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text(
+                          title: const Text(
                             "Are you sure you want to purchase this item?",
                             style: TextStyle(
                               fontFamily: 'Inter-bold',
@@ -216,8 +202,8 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                             ),
                           ),
                           content: Text(
-                            'You are about to purchase ${snapshot3.data[index].points_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
-                            style: TextStyle(
+                            'You are about to purchase ${snapshot3.data[index].item_name.toString()}. This costs ${snapshot3.data[index].points.toString()} points. Are you sure you want to purchase this item?',
+                            style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 14,
                               color: Color.fromARGB(255, 106, 106, 106),
@@ -225,7 +211,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                           ),
                           actions: [
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 "Yes",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 3, 192, 31),
@@ -236,7 +222,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                               onPressed: () => Navigator.pop(context),
                             ),
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 "No",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 255, 0, 0),
@@ -257,50 +243,9 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
           },
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
+      // bottomNavigationBar: Container(
+      //   child: BottomNav(),
+      // ),
     );
   }
 }
-
-
-// onPressed: () {
-//                                 showDialog(
-//                                   context: context,
-//                                   builder: (context) => AlertDialog(
-//                                     title: Text(
-//                                       "Are you sure you want to purchase this item?",
-//                                       style: TextStyle(
-//                                         fontFamily: 'Inter-bold',
-//                                         fontSize: 18,
-//                                         color: Color.fromARGB(255, 0, 0, 0),
-//                                       ),
-//                                     ),
-//                                     content: Text(
-//                                       'You are about to purchase ${snapshot3.data[index].points_name.toString()}. Are you sure you want to purchase this item?',
-//                                       style: TextStyle(
-//                                         fontFamily: 'Inter-semibold',
-//                                         fontWeight: FontWeight.bold,
-//                                         fontSize: 16,
-//                                         color:
-//                                             Color.fromARGB(255, 106, 106, 106),
-//                                       ),
-//                                     ),
-//                                     actions: [
-//                                       ElevatedButton(
-//                                         child: Text("Yes I'm sure!"),
-//                                         onPressed: () => Navigator.pop(context),
-//                                         style: ElevatedButton.styleFrom(
-//                                           padding: EdgeInsets.all(10),
-//                                           minimumSize: const Size(50, 40),
-//                                           backgroundColor:
-//                                               Color.fromARGB(255, 255, 153, 0),
-//                                           elevation: 12.0,
-                                          
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 );
-//                               },

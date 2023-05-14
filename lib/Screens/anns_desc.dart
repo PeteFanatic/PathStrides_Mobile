@@ -76,18 +76,6 @@ class AnnounceDescription extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.topLeft,
-                margin: const EdgeInsets.only(left: 10.0, right: 0.0),
-                child: Text(
-                  announceview.location,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: Color.fromARGB(255, 83, 83, 83),
-                      fontFamily: 'Inter-bold'),
-                ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
                 margin: const EdgeInsets.only(
                     top: 30, left: 20.0, right: 0.0, bottom: 0),
                 child: Text(
@@ -123,9 +111,9 @@ class AnnounceDescription extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
+      // bottomNavigationBar: Container(
+      //   child: BottomNav(),
+      // ),
     );
   }
 }

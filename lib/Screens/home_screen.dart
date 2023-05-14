@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pathstrides_mobile/Screens/login_screen.dart';
-import 'package:pathstrides_mobile/Screens/profile_screen.dart';
-import 'package:pathstrides_mobile/Screens/task_desc.dart';
+import 'package:pathstrides_mobile/Services/getX.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'announcement_screen.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'anns_desc.dart';
-import 'dashboard_screen.dart';
 import 'task_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
   // void getUser() async {
   //   var data =
   //       await http.get(Uri.parse('http://10.0.2.2:8000/api/employeeUser'));
@@ -34,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
     var data =
         await http.get(Uri.parse('http://10.0.2.2:8000/api/employeeTask'));
     var jsonData = json.decode(data.body);
-    late SharedPreferences preferences;
-    preferences = await SharedPreferences.getInstance();
+    // late SharedPreferences preferences;
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
     //int? user_id = preferences.getInt('user_id');
     List<TaskData> tasks = [];
     for (var u in jsonData) {
@@ -67,43 +63,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
     List<AnnouncementData> announcements = [];
     for (var a in jsonData) {
-      AnnouncementData announcement = AnnouncementData(
-        a["anns_id"],
-        a["anns_title"],
-        a["anns_desc"],
-        a["location"],
-        a["anns_lat"],
-        a["anns_long"],
+      AnnouncementData announcement =
+          AnnouncementData(a["anns_id"], a["anns_title"], a["anns_desc"]
 
-        //a["status"],
-        //a["user_id"],
-      );
+              //a["status"],
+              //a["user_id"],
+              );
       announcements.add(announcement);
     }
     print(announcements.length);
     return announcements;
   }
 
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 240, 240, 240),
+        backgroundColor: const Color.fromARGB(255, 240, 240, 240),
         appBar: AppBar(
           actions: <Widget>[
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.person,
                 color: Color.fromARGB(255, 240, 240, 240),
               ),
               onPressed: () => Navigator.of(context, rootNavigator: true)
                   .pushReplacement(MaterialPageRoute(
-                      builder: (context) => new LoginScreen())),
+                      builder: (context) => const LoginScreen())),
             ),
             Container(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   top: 20.0, left: 0.0, bottom: 0.0, right: 260.0),
-              child: new Text(
-                "Welcome, ",
+              child: const Text(
+                "Welcome ",
                 style: TextStyle(
                   fontFamily: 'Inter-medium',
                   fontSize: 16,
@@ -112,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
-          backgroundColor: Color.fromARGB(255, 255, 126, 45),
+          backgroundColor: const Color.fromARGB(255, 255, 126, 45),
           elevation: 5,
         ),
         body: SingleChildScrollView(
@@ -134,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ignore: prefer_const_constructors
                 padding: EdgeInsets.only(
                     top: 24.0, left: 334.0, bottom: 0.0, right: 0.0),
-                child: Text('See All',
+                child: const Text('See All',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontFamily: 'Inter-Regular',
@@ -143,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold)),
               ),
               Container(
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                       top: 60.0, left: 20.0, bottom: 0.0, right: 0.0),
                   height: 500,
                   width: 353,
@@ -151,25 +143,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     future: _getTask(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.data == null || snapshot.data.isEmpty) {
-                        return Container(
-                            child: Center(child: CircularProgressIndicator()));
+                        return const Center(child: CircularProgressIndicator());
                       } else {
                         return ListView.builder(
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            TaskData data = snapshot.data[index];
-                            TaskData taskview;
-
                             return GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TaskScreen()));
+                                  final controller =
+                                      Get.find<NavBarController>();
+                                  controller.tabIndex(2);
                                 },
                                 // ignore: unnecessary_new
                                 child: new Container(
                                   height: 200,
+                                  width: 900,
                                   margin: const EdgeInsets.only(
                                       top: 0.0,
                                       left: 0.0,
@@ -179,78 +167,74 @@ class _HomeScreenState extends State<HomeScreen> {
                                     gradient: LinearGradient(
                                       begin: Alignment.topRight,
                                       end: Alignment.bottomLeft,
-                                      colors: snapshot.data[index].task_id != 1
-                                          ? [
-                                              Color.fromARGB(255, 196, 35, 35),
-                                              Color.fromARGB(255, 255, 45, 45),
+                                      colors: snapshot.data[index].status !=
+                                              "Finished"
+                                          ? const [
+                                              Color.fromARGB(255, 255, 163, 87),
+                                              Color.fromARGB(255, 207, 102, 37),
                                             ]
-                                          : [
-                                              Color.fromARGB(255, 44, 0, 0),
-                                              Color.fromARGB(255, 170, 0, 0),
+                                          : const [
+                                              Color.fromARGB(255, 26, 156, 76),
+                                              Color.fromARGB(255, 8, 105, 16),
                                             ],
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
                                   ),
-                                  child: ListTile(
-                                    title: Container(
+                                  child: Container(
                                       margin: const EdgeInsets.only(
                                           top: 20.0,
-                                          left: 0.0,
+                                          left: 10.0,
                                           bottom: 0.0,
                                           right: 0.0),
-                                      child: Text(
-                                        snapshot.data[index].task_title,
-                                        style: TextStyle(
-                                          fontFamily: 'Inter-black',
-                                          fontSize: 24,
-                                          color:
-                                              snapshot.data[index].task_id == 1
-                                                  ? Color.fromARGB(
-                                                      255, 240, 240, 240)
-                                                  : Color.fromARGB(
-                                                      255, 255, 126, 45),
-                                        ),
-                                      ),
-                                    ),
-                                    subtitle: Container(
-                                        margin: const EdgeInsets.only(
-                                            top: 10.0,
-                                            left: 0.0,
-                                            bottom: 0.0,
-                                            right: 240.0),
-                                        child: Column(children: [
-                                          Text(
-                                            snapshot.data[index].address,
-                                            style: TextStyle(
-                                              fontFamily: 'Inter-regular',
-                                              fontSize: 18,
-                                              color: snapshot.data[index]
-                                                          .task_id ==
-                                                      1
-                                                  ? Color.fromARGB(
-                                                      255, 240, 240, 240)
-                                                  : Color.fromARGB(
-                                                      255, 255, 126, 45),
+                                      // child: Text(
+                                      //   snapshot.data[index].task_title,
+                                      //   style: TextStyle(
+                                      //     fontFamily: 'Inter-black',
+                                      //     fontSize: 24,
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              //textAlign: TextAlign.left,
+                                              snapshot.data[index].task_title,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter-black',
+                                                fontSize: 24,
+                                                color: Colors.white,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            snapshot.data[index].task_desc,
-                                            style: TextStyle(
-                                              fontFamily: 'Inter-regular',
-                                              fontSize: 18,
-                                              color: snapshot.data[index]
-                                                          .task_id ==
-                                                      1
-                                                  ? Color.fromARGB(
-                                                      255, 240, 240, 240)
-                                                  : Color.fromARGB(
-                                                      255, 255, 126, 45),
+                                            Text(
+                                              snapshot.data[index].address,
+                                              style: const TextStyle(
+                                                  fontFamily: 'Inter-regular',
+                                                  fontSize: 14,
+                                                  color: Colors.white),
                                             ),
-                                          ),
-                                        ])),
-                                    isThreeLine: true,
-                                  ),
+                                            // Text(
+                                            //   "",
+                                            //   style: TextStyle(
+                                            //       fontFamily: 'Inter-regular',
+                                            //       fontSize: 14,
+                                            //       color: Colors.white),
+                                            // ),
+                                            const Divider(
+                                              color: Colors.white,
+                                              thickness: 2,
+                                            ),
+                                            Text(
+                                              snapshot.data[index].task_desc,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter-regular',
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ])),
                                 ));
                           },
                         );
@@ -273,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ignore: prefer_const_constructors
                 padding: EdgeInsets.only(
                     top: 305.0, left: 334.0, bottom: 0.0, right: 0.0),
-                child: Text('See All',
+                child: const Text('See All',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontFamily: 'Inter-Regular',
@@ -282,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold)),
               ),
               Container(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: 350.0, left: 20.0, bottom: 0.0, right: 0.0),
                   height: 800,
                   width: 373,
@@ -290,89 +274,70 @@ class _HomeScreenState extends State<HomeScreen> {
                     future: _getAnnouncement(),
                     builder: (BuildContext context, AsyncSnapshot snapshot2) {
                       if (snapshot2.data == null || snapshot2.data.isEmpty) {
-                        return Container(
-                            child: Center(child: CircularProgressIndicator()));
+                        return const Center(child: CircularProgressIndicator());
                       } else {
                         return ListView.builder(
                           itemCount: 1,
                           itemBuilder: (BuildContext context, int index) {
-                            AnnouncementData data = snapshot2.data[index];
+                            // AnnouncementData data = snapshot2.data[index];
                             return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AnnouncementScreen()));
-                              },
-                              child: new Container(
-                                height: 200,
-                                margin: const EdgeInsets.only(
-                                    top: 0.0,
-                                    left: 0.0,
-                                    bottom: 0.0,
-                                    right: 0.0),
-                                decoration: BoxDecoration(
+                                onTap: () {
+                                  final controller =
+                                      Get.find<NavBarController>();
+                                  controller.tabIndex(1);
+                                },
+                                child: Container(
+                                  height: 200,
+                                  width: 900,
+                                  margin: const EdgeInsets.only(
+                                      top: 0.0,
+                                      left: 0.0,
+                                      bottom: 0.0,
+                                      right: 0.0),
+                                  decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      colors: snapshot2.data[index].anns_id == 1
-                                          ? [
-                                              Color.fromARGB(255, 196, 35, 35),
-                                              Color.fromARGB(255, 255, 126, 45),
-                                            ]
-                                          : [
-                                              Color.fromARGB(255, 0, 88, 29),
-                                              Color.fromARGB(255, 0, 151, 50),
-                                            ],
-                                    ),
-                                    color: snapshot2.data[index].anns_id == 1
-                                        ? Colors.red
-                                        : Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: ListTile(
-                                  leading: Text(
-                                    snapshot2.data[index].anns_title,
-                                    style: TextStyle(
-                                      fontFamily: 'Inter-black',
-                                      fontSize: 24,
-                                      color: snapshot2.data[index].anns_id == 1
-                                          ? Color.fromARGB(255, 240, 240, 240)
-                                          : Color.fromARGB(255, 255, 126, 45),
-                                    ),
+                                        begin: Alignment.topRight,
+                                        end: Alignment.bottomLeft,
+                                        colors: const [
+                                          Color.fromARGB(255, 255, 87, 87),
+                                          Color.fromARGB(255, 207, 37, 37),
+                                        ]),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
                                   ),
-                                  title: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 0.0,
-                                        left: 0.0,
-                                        bottom: 0.0,
-                                        right: 0.0),
-                                    child: Text(
-                                      snapshot2.data[index].location,
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-semibold',
-                                        fontSize: 12,
-                                        color: snapshot2.data[index].anns_id ==
-                                                1
-                                            ? Color.fromARGB(255, 240, 240, 240)
-                                            : Color.fromARGB(255, 255, 126, 45),
-                                      ),
-                                    ),
-                                  ),
-                                  trailing: Text(
-                                    snapshot2.data[index].anns_desc,
-                                    style: TextStyle(
-                                      fontFamily: 'Inter-semibold',
-                                      fontSize: 12,
-                                      color: snapshot2.data[index].anns_id == 1
-                                          ? Color.fromARGB(255, 240, 240, 240)
-                                          : Color.fromARGB(255, 255, 126, 45),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
+                                  child: Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 20.0,
+                                          left: 10.0,
+                                          bottom: 0.0,
+                                          right: 0.0),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              //textAlign: TextAlign.left,
+                                              snapshot2.data[index].anns_title,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter-black',
+                                                fontSize: 24,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const Divider(
+                                              color: Colors.white,
+                                              thickness: 2,
+                                            ),
+                                            Text(
+                                              snapshot2.data[index].anns_desc,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter-regular',
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ])),
+                                ));
                           },
                         );
                       }

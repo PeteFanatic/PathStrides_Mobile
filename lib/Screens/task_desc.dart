@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:pathstrides_mobile/Screens/geolocation_screen.dart';
+import 'package:pathstrides_mobile/Screens/taskReport_screen.dart';
 import 'package:pathstrides_mobile/Screens/task_report.dart';
 
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _TaskDescriptionState extends State<TaskDescription> {
                 padding: EdgeInsets.only(
                     top: 10.0, left: 0.0, bottom: 5.0, right: 200.0),
                 child: Text(
-                  " Earning points: ${widget.taskview.points} points",
+                  "Earning points: ${widget.taskview.points} points",
                   style: TextStyle(
                       fontSize: 14.0,
                       color: Colors.black,
@@ -108,7 +109,7 @@ class _TaskDescriptionState extends State<TaskDescription> {
               ),
               Container(
                 padding: EdgeInsets.only(
-                    top: 0.0, left: 0.0, bottom: 0.0, right: 227.0),
+                    top: 0.0, left: 0.0, bottom: 0.0, right: 224.0),
                 child: Text(
                   "Deadline: ${widget.taskview.deadline}",
                   style: TextStyle(
@@ -155,121 +156,133 @@ class _TaskDescriptionState extends State<TaskDescription> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NavigationScreen(
-                              double.parse(widget.taskview.lat),
-                              double.parse(widget.taskview.lng))));
-                    },
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 30.0, left: 0.0, bottom: 0.0, right: 0.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NavigationScreen(
+                                  double.parse(widget.taskview.lat),
+                                  double.parse(widget.taskview.lng),
+                                  taskview: widget.taskview,
+                                )));
+                      },
 
-                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(
-                            top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
-                        minimumSize: const Size(150, 40),
-                        backgroundColor: Color.fromARGB(255, 255, 153, 0),
-                        elevation: 12.0,
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Inter-Bold',
-                            fontSize: 18)),
-                    child: const Text('Start Task'),
+                      // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(
+                              top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
+                          minimumSize: const Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 255, 153, 0),
+                          elevation: 12.0,
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Inter-Bold',
+                              fontSize: 18)),
+                      child: const Text('Start Task'),
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => TaskReport()));
-                    },
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 30.0, left: 0.0, bottom: 0.0, right: 0.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => TaskReport(
+                                  taskview: widget.taskview,
+                                )));
+                      },
 
-                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(
-                            top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
-                        minimumSize: const Size(150, 40),
-                        backgroundColor: Color.fromARGB(255, 71, 71, 71),
-                        elevation: 12.0,
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Inter-Bold',
-                            fontSize: 18)),
-                    child: const Text('Task Report'),
-                  ),
+                      // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(
+                              top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
+                          minimumSize: const Size(150, 40),
+                          backgroundColor: Color.fromARGB(255, 71, 71, 71),
+                          elevation: 12.0,
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Inter-Bold',
+                              fontSize: 18)),
+                      child: const Text('Task Report'),
+                    ),
+                  )
                 ],
               ),
-              Container(
-                alignment: Alignment.topLeft,
-                margin: const EdgeInsets.only(
-                    top: 20, left: 20.0, right: 0.0, bottom: 0),
-                child: Text(
-                  "Comments",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black,
-                      fontFamily: 'Inter-bold'),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  top: 10.0,
-                  left: 10.0,
-                  bottom: 0.0,
-                  right: 10.0,
-                ),
-                height: 100,
-                width: 380,
-                child: const Card(
-                  color: Colors.white,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 0,
-                    vertical: 5,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 10.0,
-                      left: 10.0,
-                      bottom: 0.0,
-                      right: 0.0,
-                    ),
-                    child: Text(
-                      '',
-                      style: TextStyle(
-                        fontFamily: 'Inter-regular',
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => NavigationScreen(
-                          double.parse(widget.taskview.lat),
-                          double.parse(widget.taskview.lng))));
-                },
+              // Container(
+              //   alignment: Alignment.topLeft,
+              //   margin: const EdgeInsets.only(
+              //       top: 20, left: 20.0, right: 0.0, bottom: 0),
+              //   child: Text(
+              //     "Comments",
+              //     textAlign: TextAlign.left,
+              //     style: TextStyle(
+              //         fontSize: 16.0,
+              //         color: Colors.black,
+              //         fontFamily: 'Inter-bold'),
+              //   ),
+              // ),
+              // Container(
+              //   padding: EdgeInsets.only(
+              //     top: 10.0,
+              //     left: 10.0,
+              //     bottom: 0.0,
+              //     right: 10.0,
+              //   ),
+              //   height: 100,
+              //   width: 380,
+              //   child: const Card(
+              //     color: Colors.white,
+              //     margin: EdgeInsets.symmetric(
+              //       horizontal: 0,
+              //       vertical: 5,
+              //     ),
+              //     child: Padding(
+              //       padding: EdgeInsets.only(
+              //         top: 10.0,
+              //         left: 10.0,
+              //         bottom: 0.0,
+              //         right: 0.0,
+              //       ),
+              //       child: Text(
+              //         '',
+              //         style: TextStyle(
+              //           fontFamily: 'Inter-regular',
+              //           fontSize: 14,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (context) => NavigationScreen(
+              //             double.parse(widget.taskview.lat),
+              //             double.parse(widget.taskview.lng))));
+              //   },
 
-                // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.only(
-                        top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
-                    minimumSize: const Size(80, 40),
-                    backgroundColor: Color.fromARGB(255, 255, 153, 0),
-                    elevation: 12.0,
-                    textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter-Bold',
-                        fontSize: 18)),
-                child: const Text('Send'),
-              ),
+              //   // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              //   style: ElevatedButton.styleFrom(
+              //       padding: EdgeInsets.only(
+              //           top: 0.0, left: 0.0, bottom: 0.0, right: 0.0),
+              //       minimumSize: const Size(80, 40),
+              //       backgroundColor: Color.fromARGB(255, 255, 153, 0),
+              //       elevation: 12.0,
+              //       textStyle: const TextStyle(
+              //           color: Colors.white,
+              //           fontFamily: 'Inter-Bold',
+              //           fontSize: 18)),
+              //   child: const Text('Send'),
+              // ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
+      // bottomNavigationBar: Container(
+      //   child: BottomNav(),
+      // ),
     );
   }
 }

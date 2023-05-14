@@ -21,7 +21,9 @@ import '../Screens/task_screen.dart';
 class NavigationScreen extends StatefulWidget {
   final double lat;
   final double lng;
-  NavigationScreen(this.lat, this.lng);
+  final TaskData taskview;
+  const NavigationScreen(this.lat, this.lng,
+      {super.key, required this.taskview});
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -33,7 +35,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Map<PolylineId, Polyline> polylines = {};
   PolylinePoints polylinePoints = PolylinePoints();
   Location location = Location();
-
+  late TaskData taskview;
   Marker? sourcePosition, destinationPosition;
   loc.LocationData? _currentPosition;
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
@@ -110,7 +112,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           },
         ),
         title: new Text(
-          "Test",
+          widget.taskview.address,
           style: TextStyle(
             fontFamily: 'Inter-bold',
             color: Colors.black,
@@ -132,8 +134,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   polylines: Set<Polyline>.of(polylines.values),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(widget.lat, widget.lng),
-
-                    //zoom: 2,
+                    zoom: 2,
                   ),
                   markers: {sourcePosition!, destinationPosition!},
                   onTap: (latLng) {
@@ -182,16 +183,18 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         ),
                       ),
                     )),
-                distance2 <= 0.1
+                distance2 >= 0.3
                     ? Positioned(
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 530.0, left: 100.0, bottom: 0.0, right: 0.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => TaskReport()));
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                      builder: (context) => TaskReport(
+                                            taskview: widget.taskview,
+                                          )));
                             },
 
                             // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
@@ -280,7 +283,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         target:
         LatLng(currentLocation.latitude!, currentLocation.longitude!);
         zoom:
-        10.0;
+        100.0;
         // controller?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         //   target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
         //   zoom: 12.0,
@@ -368,16 +371,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
         position: LatLng(widget.lat, widget.lng),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       );
-    });
-  }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), "assets/images/usericon.png")
-        .then((icon) {
-      setState(() {
-        markerIcon = icon;
-      });
     });
   }
 }

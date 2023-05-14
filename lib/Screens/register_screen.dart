@@ -43,8 +43,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await preferences.setString(
             'user_fname', responseMap['users']['user_fname']);
         await preferences.setString(
-            'user_mname', responseMap['users']['user_mname']);
-        await preferences.setString(
             'user_lname', responseMap['users']['user_lname']);
         await preferences.setString(
             'user_email', responseMap['users']['user_email']);

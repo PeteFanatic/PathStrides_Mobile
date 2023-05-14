@@ -17,14 +17,11 @@ class AnnouncementData {
   int anns_id;
   String anns_title = "";
   String anns_desc = "";
-  String location = "";
-  String anns_lat = "";
-  String anns_long = "";
+
   //int status;
   //int user_id = 0;
 
-  AnnouncementData(this.anns_id, this.anns_title, this.anns_desc, this.location,
-      this.anns_lat, this.anns_long
+  AnnouncementData(this.anns_id, this.anns_title, this.anns_desc
       //this.status, this.user_id
       );
 }
@@ -41,9 +38,6 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
         a["anns_id"],
         a["anns_title"],
         a["anns_desc"],
-        a["location"],
-        a["anns_lat"],
-        a["anns_long"],
         //a["status"],
         //a["user_id"],
       );
@@ -76,22 +70,8 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                   children: [
                     Row(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 30,
-                            color: Color.fromARGB(255, 255, 153, 0),
-                          ),
-                        ),
                         Text(
-                          "Announcement",
+                          " Announcements",
                           style: TextStyle(
                             fontFamily: 'Inter-Black',
                             fontSize: 25,
@@ -143,11 +123,6 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                         style:
                             TextStyle(fontFamily: 'Inter-black', fontSize: 18),
                       ),
-                      subtitle: Text(
-                        snapshot2.data[index].location,
-                        style: TextStyle(
-                            fontFamily: 'Inter-semibold', fontSize: 12),
-                      ),
                       trailing: Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: const Color.fromARGB(255, 255, 126, 45),
@@ -167,9 +142,9 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
           },
         ),
       ),
-      bottomNavigationBar: Container(
-        child: BottomNav(),
-      ),
+      // bottomNavigationBar: Container(
+      //   child: BottomNav(),
+      // ),
     );
   }
 }
