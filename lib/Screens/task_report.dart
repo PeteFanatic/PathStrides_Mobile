@@ -230,7 +230,8 @@ class _TaskReportState extends State<TaskReport> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => TaskReportData()));
+                                  builder: (context) => TaskReportData(
+                                      taskview: widget.taskview)));
                         }))
               ],
             ),

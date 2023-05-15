@@ -10,6 +10,7 @@ class UserProfileModel {
   String? department;
   String? status;
   String? contactNumber;
+  String? token;
 }
 
 class ProfileController extends GetxController {
@@ -37,6 +38,7 @@ class ProfileController extends GetxController {
     userProfile.value.status = preferences.getString('status').toString();
     userProfile.value.contactNumber =
         preferences.getString('contactnumber').toString();
+    userProfile.value.token = preferences.getString('token').toString();
   }
 }
 

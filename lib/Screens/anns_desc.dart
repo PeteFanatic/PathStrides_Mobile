@@ -10,16 +10,17 @@ class AnnounceDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 240, 240, 240),
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 10,
               left: 10,
             ),
-            color: Color.fromARGB(255, 255, 255, 255), // set your color
+            color: const Color.fromARGB(255, 255, 255, 255), // set your color
             child: Column(
               children: [
                 Row(
@@ -36,13 +37,13 @@ class AnnounceDescription extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.arrow_back,
                             size: 30,
                             color: Color.fromARGB(255, 255, 153, 0),
                           ),
                         ),
-                        Text(
+                        const Text(
                           "Announcement",
                           style: TextStyle(
                             fontFamily: 'Inter-Black',
@@ -71,14 +72,15 @@ class AnnounceDescription extends StatelessWidget {
                 child: Text(
                   announceview.anns_title,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 30.0, fontFamily: 'Inter-black'),
+                  style: const TextStyle(
+                      fontSize: 30.0, fontFamily: 'Inter-black'),
                 ),
               ),
               Container(
                 alignment: Alignment.topLeft,
                 margin: const EdgeInsets.only(
                     top: 30, left: 20.0, right: 0.0, bottom: 0),
-                child: Text(
+                child: const Text(
                   "Description",
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -88,25 +90,35 @@ class AnnounceDescription extends StatelessWidget {
                 ),
               ),
               Container(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: 0.0, left: 10.0, bottom: 0.0, right: 10.0),
-                  height: 500,
+                  height: 200,
                   width: 380,
                   child: Card(
                       color: Colors.white,
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                         horizontal: 0,
                         vertical: 5,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                             top: 10.0, left: 10.0, bottom: 0.0, right: 0.0),
                         child: Text(
                           announceview.anns_desc,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'Inter-regular', fontSize: 14),
                         ),
                       ))),
+              SizedBox(
+                  width: 100,
+                  height: 100,
+                  child:
+                      //Text(snapshot.data[index].task_report_id)),
+                      Image.network(
+                    "http://10.0.2.2:8000/api/show/${announceview.anns_id}",
+                    width: 300,
+                    height: 300,
+                  )),
             ],
           ),
         ),

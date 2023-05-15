@@ -55,6 +55,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(

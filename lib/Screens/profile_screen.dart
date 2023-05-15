@@ -1,11 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:pathstrides_mobile/Screens/login_screen.dart';
 import 'package:pathstrides_mobile/Screens/pointsshop_screen.dart';
 import 'package:pathstrides_mobile/Services/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Services/globals.dart';
 
 class ProfileScreen extends StatefulWidget {
   //ProfileData profileview;
@@ -24,12 +27,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  Future<void> logout() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    //UserProfileModel user = userProfile.value;
+    final token = preferences.getString('token');
+    // Retrieve the user's token from the shared preferences or any other storage mechanism
+
+    final response = await http.post(
+      Uri.parse('https://10.0.2.2:8000/api/logoutEmployee'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Logout successful
+      // Clear user data and navigate to the login screen
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const LoginScreen(),
+          ));
+      // Navigate to login screen
+    } else {
+      errorSnackBar(context, 'logout error.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // var user = UserData();
     final controller = Get.find<ProfileController>();
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(
@@ -198,25 +231,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.groups_3_rounded),
-                          onPressed: () {},
-                          iconSize: 30,
-                        ),
-                        Obx(() {
-                          UserProfileModel user = controller.userProfile.value;
-                          return Text(
-                            user.department ?? "",
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 20,
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
                           icon: const Icon(Icons.email_rounded),
                           onPressed: () {},
                           iconSize: 30,
@@ -277,10 +291,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const LoginScreen()));
                 },
-
                 // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(

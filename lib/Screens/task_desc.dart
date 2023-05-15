@@ -23,6 +23,7 @@ class _TaskDescriptionState extends State<TaskDescription> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(
@@ -189,7 +190,7 @@ class _TaskDescriptionState extends State<TaskDescription> {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => TaskReport(
+                            builder: (context) => TaskReportData(
                                   taskview: widget.taskview,
                                 )));
                       },
@@ -207,7 +208,7 @@ class _TaskDescriptionState extends State<TaskDescription> {
                               fontSize: 18)),
                       child: const Text('Task Report'),
                     ),
-                  )
+                  ),
                 ],
               ),
               // Container(

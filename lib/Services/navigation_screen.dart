@@ -52,25 +52,18 @@ class _NavigationScreenState extends State<NavigationScreen> {
     addMarker();
   }
 
-  void sendLocation(double latitude, double longitude) async {
-    var url = Uri.parse(
-        'https://example.com/api/location'); // Replace with your Laravel endpoint URL
-    var headers = {
-      'Content-Type': 'application/json'
-    }; // Replace with your headers
-
-    // Create a JSON object with the latitude and longitude data
-    var data = {'latitude': latitude, 'longitude': longitude};
-    var body = jsonEncode(data);
-
-    // Send an HTTP POST request to the Laravel endpoint with the JSON data
-    var response = await http.post(url, headers: headers, body: body);
-
-    // Check the response status code to see if the request was successful
+  Future<void> updateCoordinates(double latitude, double longitude) async {
+    final response = await http.post(
+      Uri.parse('https://your-laravel-api.com/api/update-coordinates'),
+      body: {
+        'latitude': latitude.toString(),
+        'longitude': longitude.toString(),
+      },
+    );
     if (response.statusCode == 200) {
-      // Handle successful response
+      // Coordinates updated successfully
     } else {
-      // Handle error response
+      // Error occurred
     }
   }
 
@@ -183,7 +176,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         ),
                       ),
                     )),
-                distance2 >= 0.3
+                distance2 <= 0.3
                     ? Positioned(
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -216,34 +209,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           ),
                         ),
                       )
-                    : Positioned(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 530.0, left: 100.0, bottom: 0.0, right: 0.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              null;
-                            },
-
-                            // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                            style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.only(
-                                    top: 0.0,
-                                    left: 0.0,
-                                    bottom: 0.0,
-                                    right: 0.0),
-                                minimumSize: const Size(200, 40),
-                                backgroundColor:
-                                    Color.fromARGB(255, 71, 71, 71),
-                                elevation: 12.0,
-                                textStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter-Bold',
-                                    fontSize: 14)),
-                            child: const Text('Comment'),
-                          ),
-                        ),
-                      ),
+                    : Container(),
                 //'${double.parse((getDistance(LatLng(widget.lat, widget.lng)).toStringAsFixed(2)))} km'
 
                 // if('${double.parse((getDistance(LatLng(widget.lat, widget.lng)).toStringAsFixed(2)))} km'=='2'){}
@@ -276,10 +242,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
     if (permissionGranted == loc.PermissionStatus.granted) {
       _currentPosition = await location.getLocation();
+
       curLocation =
           LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
       locationSubscription =
           location.onLocationChanged.listen((LocationData currentLocation) {
+        //updateCoordinates(currentLocation.latitude, _currentPosition.longitude);
         target:
         LatLng(currentLocation.latitude!, currentLocation.longitude!);
         zoom:

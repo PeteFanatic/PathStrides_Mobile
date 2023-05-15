@@ -1,6 +1,9 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pathstrides_mobile/Screens/login_screen.dart';
+import 'package:pathstrides_mobile/Screens/profile_screen.dart';
 import 'package:pathstrides_mobile/Services/getX.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'announcement_screen.dart';
@@ -30,29 +33,27 @@ class _HomeScreenState extends State<HomeScreen> {
     var data =
         await http.get(Uri.parse('http://10.0.2.2:8000/api/employeeTask'));
     var jsonData = json.decode(data.body);
-    // late SharedPreferences preferences;
-    // SharedPreferences preferences = await SharedPreferences.getInstance();
-    //int? user_id = preferences.getInt('user_id');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int? user_id = preferences.getInt('user_id');
+
     List<TaskData> tasks = [];
     for (var u in jsonData) {
       TaskData task = TaskData(
-          u["task_id"],
-          u["user_id"],
-          u["task_title"],
-          u["task_desc"],
-          u["points"],
-          u["address"],
-          u["lat"],
-          u["lng"],
-          u["status"],
-          u["deadline"]);
-      //int temp = u["user_id"];
-      //if (temp == user_id) {
-      tasks.add(task);
-      //}
-    }
-    print(tasks.length);
+          task_id: u["task_id"],
+          user_id: u["user_id"],
+          task_title: u["task_title"],
+          task_desc: u["task_desc"],
+          points: u["points"],
+          address: u["address"],
+          lat: u["lat"],
+          lng: u["lng"],
+          status: u["status"],
+          deadline: u["deadline"]);
 
+      if (task.user_id == user_id && task.status != "Completed") {
+        tasks.add(task);
+      }
+    }
     return tasks;
   }
 
@@ -81,15 +82,16 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 240, 240, 240),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           actions: <Widget>[
             IconButton(
               icon: const Icon(
                 Icons.person,
                 color: Color.fromARGB(255, 240, 240, 240),
               ),
-              onPressed: () => Navigator.of(context, rootNavigator: true)
-                  .pushReplacement(MaterialPageRoute(
-                      builder: (context) => const LoginScreen())),
+              onPressed: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                      builder: (context) => const ProfileScreen())),
             ),
             Container(
               padding: const EdgeInsets.only(
@@ -119,18 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                         fontFamily: 'Inter-Regular',
                         fontSize: 18.0,
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                // ignore: prefer_const_constructors
-                padding: EdgeInsets.only(
-                    top: 24.0, left: 334.0, bottom: 0.0, right: 0.0),
-                child: const Text('See All',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontFamily: 'Inter-Regular',
-                        fontSize: 12.0,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.bold)),
               ),
@@ -250,18 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                         fontFamily: 'Inter-Regular',
                         fontSize: 18.0,
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                // ignore: prefer_const_constructors
-                padding: EdgeInsets.only(
-                    top: 305.0, left: 334.0, bottom: 0.0, right: 0.0),
-                child: const Text('See All',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontFamily: 'Inter-Regular',
-                        fontSize: 12.0,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.bold)),
               ),

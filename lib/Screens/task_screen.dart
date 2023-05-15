@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors
+// ignore_for_file: unused_local_variable, prefer_const_constructors, non_constant_identifier_names
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -29,16 +29,16 @@ class TaskData {
   String deadline = "";
 
   TaskData(
-      this.task_id,
-      this.user_id,
-      this.task_title,
-      this.task_desc,
-      this.points,
-      this.address,
-      this.lat,
-      this.lng,
-      this.status,
-      this.deadline);
+      {required this.task_id,
+      required this.user_id,
+      required this.task_title,
+      required this.task_desc,
+      required this.points,
+      required this.address,
+      required this.lat,
+      required this.lng,
+      required this.status,
+      required this.deadline});
 }
 
 class _TaskScreenState extends State<TaskScreen> {
@@ -46,26 +46,25 @@ class _TaskScreenState extends State<TaskScreen> {
     var data =
         await http.get(Uri.parse('http://10.0.2.2:8000/api/employeeTask'));
     var jsonData = json.decode(data.body);
-    late SharedPreferences preferences;
-    preferences = await SharedPreferences.getInstance();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     int? user_id = preferences.getInt('user_id');
     List<TaskData> tasks = [];
     for (var u in jsonData) {
       TaskData task = TaskData(
-          u["task_id"],
-          u["user_id"],
-          u["task_title"],
-          u["task_desc"],
-          u["points"],
-          u["address"],
-          u["lat"],
-          u["lng"],
-          u["status"],
-          u["deadline"]);
-      int temp = u["user_id"];
-      //if (temp == user_id) {
-      tasks.add(task);
-      //}
+          task_id: u["task_id"],
+          user_id: u["user_id"],
+          task_title: u["task_title"],
+          task_desc: u["task_desc"],
+          points: u["points"],
+          address: u["address"],
+          lat: u["lat"],
+          lng: u["lng"],
+          status: u["status"],
+          deadline: u["deadline"]);
+
+      if (task.user_id == user_id && task.status != "Completed") {
+        tasks.add(task);
+      }
     }
     print(tasks.length);
 
@@ -80,6 +79,7 @@ class _TaskScreenState extends State<TaskScreen> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 70.10, //set your height
         flexibleSpace: SafeArea(
           child: Container(
