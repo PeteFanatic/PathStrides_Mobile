@@ -48,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
           lat: u["lat"],
           lng: u["lng"],
           status: u["status"],
-          deadline: u["deadline"]);
+          deadline: u["deadline"],
+          dep_name: u["dep_name"]);
 
       if (task.user_id == user_id && task.status != "Completed") {
         tasks.add(task);

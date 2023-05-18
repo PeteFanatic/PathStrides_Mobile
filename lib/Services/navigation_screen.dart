@@ -176,7 +176,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         ),
                       ),
                     )),
-                distance2 <= 0.3
+                distance2 >= 0.3
                     ? Positioned(
                         child: Padding(
                           padding: const EdgeInsets.only(

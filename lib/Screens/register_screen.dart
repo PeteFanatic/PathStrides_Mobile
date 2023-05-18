@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pathstrides_mobile/Screens/dashboard_screen.dart';
 import 'package:pathstrides_mobile/Services/auth_services.dart';
 import 'package:pathstrides_mobile/Services/globals.dart';
+import 'package:pathstrides_mobile/Services/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
 import '../rounded_button.dart';
@@ -25,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _confirmPass = '';
   bool ishiddenPassword = true;
 
-  createAccountPressed() async {
+  createAccountPressed(ProfileController controller) async {
     // bool emailValid = RegExp(
     //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
     //     .hasMatch(_email);
@@ -53,9 +55,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await preferences.setString('status', responseMap['users']['status']);
 
         await preferences.setInt('admin_id', responseMap['users']['admin_id']);
-        await preferences.setInt('dep_id', responseMap['users']['dep_id']);
+        await preferences.setString(
+            'dep_name', responseMap['users']['dep_name']);
         await preferences.setInt('emp_coll', responseMap['users']['emp_coll']);
         await preferences.setString('token', 'token');
+        controller.setUserProfile();
         //await preferences.setStringList('data', responseMap[<String>["users"]]);
         Navigator.push(
             context,
@@ -73,8 +77,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    resizeToAvoidBottomPadding:
-    false;
+    final controller = Get.find<ProfileController>();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -223,7 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             RoundedButton(
               btnText: 'Update',
-              onBtnPressed: () => createAccountPressed(),
+              onBtnPressed: () => createAccountPressed(controller),
             ),
             const SizedBox(
               height: 40,

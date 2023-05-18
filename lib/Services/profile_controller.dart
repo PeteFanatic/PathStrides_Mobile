@@ -19,12 +19,13 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() async {
-    preferences = await SharedPreferences.getInstance();
     setUserProfile();
     super.onInit();
   }
 
-  void setUserProfile() {
+  void setUserProfile() async {
+    preferences = await SharedPreferences.getInstance();
+    print("User: ${preferences.getString('user_fname').toString()}");
     userProfile.value.firstName =
         preferences.getString('user_fname').toString();
     userProfile.value.middleName =

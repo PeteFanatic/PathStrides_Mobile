@@ -38,7 +38,7 @@ class PointShopData {
 }
 
 class _PointsShopScreenState extends State<PointsShopScreen> {
-  late SharedPreferences preferences;
+  SharedPreferences? preferences;
 
   List<PointShopData> items = [];
 
@@ -48,7 +48,10 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
   }
 
   void getUserData() async {
-    preferences = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      preferences = prefs;
+    });
   }
 
   Future<void> deductUserPoints(int pointsToDeduct) async {
@@ -76,9 +79,9 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
       PointShopData pointShop = PointShopData(p["item_id"], p["item_name"],
           p["points"], p["item_code"], p["user_id"], false, false);
       int temp = p["user_id"];
-      if (temp == user_id || temp == null) {
-        pointShops.add(pointShop);
-      }
+      //if (temp == user_id || temp == null) {
+      pointShops.add(pointShop);
+      //}
     }
     print(pointShops.length);
     items = pointShops;
@@ -107,11 +110,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
+                            Navigator.of(context).pop();
                           },
                           child: const Icon(
                             Icons.arrow_back,
@@ -162,7 +161,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                           );
                         } else {
                           return Text(
-                            preferences.getInt('user_points').toString(),
+                            preferences!.getInt('user_points').toString(),
                             style: const TextStyle(
                               fontSize: 10,
                               fontFamily: 'Inter-',
@@ -232,7 +231,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                     ),
                   ),
                   onTap: () {
-                    if (preferences.getInt('user_points')! >= data.points &&
+                    if (preferences!.getInt('user_points')! >= data.points &&
                         !data.isSold) {
                       // int? itemPoints = snapshot3.data[index].points;
 
@@ -288,7 +287,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                           ],
                         ),
                       );
-                    } else if (preferences.getInt('user_points')! <
+                    } else if (preferences!.getInt('user_points')! <
                             data.points &&
                         !data.isSold) {
                       showDialog(
@@ -303,7 +302,7 @@ class _PointsShopScreenState extends State<PointsShopScreen> {
                             ),
                           ),
                           content: Text(
-                            'You do not have enough points to purchase ${data.item_name.toString()}. This costs ${data.points.toString()} points and you only have ${preferences.getInt('user_points').toString()} points.',
+                            'You do not have enough points to purchase ${data.item_name.toString()}. This costs ${data.points.toString()} points and you only have ${preferences!.getInt('user_points').toString()} points.',
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 14,

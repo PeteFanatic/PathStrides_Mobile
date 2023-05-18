@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     Get.put(ProfileController());
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RegisterScreen(),
+      home: LandingScreen(),
     );
   }
 }

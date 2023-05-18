@@ -9,6 +9,7 @@ import 'package:pathstrides_mobile/Services/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Services/globals.dart';
+import '../controller/pointshop_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
   //ProfileData profileview;
@@ -271,6 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  Get.put(PointShopController());
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const PointsShopScreen()));
                 },
@@ -290,9 +292,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: const Text('Points Shop'),
               ),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LoginScreen()));
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+                  if (mounted) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+                  }
                 },
                 // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                 style: ElevatedButton.styleFrom(

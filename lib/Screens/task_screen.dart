@@ -27,6 +27,7 @@ class TaskData {
   String lng = "";
   String status = "";
   String deadline = "";
+  String dep_name = "";
 
   TaskData(
       {required this.task_id,
@@ -38,7 +39,8 @@ class TaskData {
       required this.lat,
       required this.lng,
       required this.status,
-      required this.deadline});
+      required this.deadline,
+      required this.dep_name});
 }
 
 class _TaskScreenState extends State<TaskScreen> {
@@ -60,7 +62,8 @@ class _TaskScreenState extends State<TaskScreen> {
           lat: u["lat"],
           lng: u["lng"],
           status: u["status"],
-          deadline: u["deadline"]);
+          deadline: u["deadline"],
+          dep_name: u["dep_name"]);
 
       if (task.user_id == user_id && task.status != "Completed") {
         tasks.add(task);

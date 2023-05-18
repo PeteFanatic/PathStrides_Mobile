@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 //import '../Services/task_api.dart';
+import '../Services/profile_controller.dart';
 import '../rounded_button.dart';
 import 'dashboard_screen.dart';
 //import 'home_screen.dart';
@@ -77,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  loginPressed() async {
+  loginPressed(ProfileController controller) async {
     if (_email.isNotEmpty && _password.isNotEmpty) {
       http.Response response = await AuthServices.login(_email, _password);
       final responseMap = jsonDecode(response.body);
@@ -108,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await preferences.setInt('dep_id', responseMap['users']['dep_id']);
         await preferences.setInt('emp_coll', responseMap['users']['emp_coll']);
         await preferences.setString('token', 'token');
+        controller.setUserProfile();
         return Future.delayed(
             const Duration(seconds: 1),
             () => Navigator.push(
@@ -134,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProfileController>();
     return ChangeNotifierProvider(
         create: (context) => UserData(),
         child: Scaffold(
@@ -223,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             RoundedButton(
               btnText: 'Log In',
-              onBtnPressed: () => loginPressed(),
+              onBtnPressed: () => loginPressed(controller),
             )
           ],
         )));

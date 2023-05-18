@@ -109,16 +109,16 @@ class AnnounceDescription extends StatelessWidget {
                               fontFamily: 'Inter-regular', fontSize: 14),
                         ),
                       ))),
-              SizedBox(
-                  width: 100,
-                  height: 100,
-                  child:
-                      //Text(snapshot.data[index].task_report_id)),
-                      Image.network(
-                    "http://10.0.2.2:8000/api/show/${announceview.anns_id}",
-                    width: 300,
-                    height: 300,
-                  )),
+              // SizedBox(
+              //     width: 100,
+              //     height: 100,
+              //     child:
+              //         //Text(snapshot.data[index].task_report_id)),
+              //         Image.network(
+              //       "http://10.0.2.2:8000/api/show/${announceview.anns_id}",
+              //       width: 300,
+              //       height: 300,
+              //     )),
             ],
           ),
         ),
