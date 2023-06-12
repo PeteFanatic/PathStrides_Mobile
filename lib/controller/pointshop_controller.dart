@@ -17,10 +17,19 @@ class PointShopController extends GetxController {
     int? user_id = preferences.getInt('user_id');
     List<PointShopData> pointShops = [];
     for (var p in jsonData) {
-      PointShopData pointShop = PointShopData(p["item_id"], p["item_name"],
-          p["points"], p["item_code"], p["user_id"], false, false);
+      print(
+          "Item ID: $p['item_id'] Item Name: $p['item_name'] Points: $p['points'] Item Code: $p['item_code'] User ID: $p['user_id']");
+      PointShopData pointShop = PointShopData(
+          p["item_id"],
+          p["item_name"],
+          p["points"],
+          p["item_code"],
+          p["user_id"],
+          p['isSold'] == 1 ? true : false,
+          p['isClaimed'] == 1 ? true : false);
       int temp = p["user_id"];
-      if (temp == user_id || temp == null) {
+
+      if (p['isClaimed'] != 1) {
         pointShops.add(pointShop);
       }
     }
@@ -28,11 +37,47 @@ class PointShopController extends GetxController {
     pointshopdatas.value = pointShops;
   }
 
-  void setItemAsSold(int index) {
+  Future<void> setItemAsSold(int index) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    String token = preferences.getString('token')!;
+
+    Map<String, dynamic> parameters = {
+      'id': pointshopdatas[index].item_id.toString(),
+      'isSold': '1',
+    };
+
+    print(token);
+
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
+
+    await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/sold')
+            .replace(queryParameters: parameters),
+        headers: headers);
+    getRedeemShop();
     pointshopdatas[index].isSold = true;
   }
 
-  void setItemAsClaimed(int index) {
+  Future<void> setItemAsClaimed(int index) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    String token = preferences.getString('token')!;
+
+    Map<String, dynamic> parameters = {
+      'id': pointshopdatas[index].item_id.toString(),
+      'isClaimed': '1',
+    };
+
+    print(token);
+
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
+
+    await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/claimed')
+            .replace(queryParameters: parameters),
+        headers: headers);
+    getRedeemShop();
     pointshopdatas[index].isClaimed = true;
   }
 
